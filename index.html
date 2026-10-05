@@ -1,230 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Color Catch Game</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        body {
-            margin: 0;
-            padding: 0;
-            background: #111;
-            color: #fff;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-        #game-container {
-            position: relative;
-            width: 100%;
-            max-width: 400px;
-            height: 100vh;
-            max-height: 700px;
-            background: #1a1a24;
-            border: 2px solid #00f3ff;
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
-            overflow: hidden;
-        }
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-        /* UI HUD Overlay */
-        .hud {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 10px;
-        }
-        .score-caption {
-            color: rgba(143, 222, 232, 1);
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 15px;
-            letter-spacing: 1px;
-        }
-        .score {
-            font-size: 55px;
-            font-weight: bold;
-            margin-top: -5px;
-            color: #fff;
-        }
-        .level {
-            color: rgba(255, 212, 110, 1);
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: -10px;
-        }
-        .hint {
-            color: rgba(148, 171, 196, 1);
-            font-size: 15px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        .level-splash {
-            position: absolute;
-            top: 45%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: rgba(255, 237, 158, 1);
-            font-size: 42px;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 212, 110, 0.8);
-            display: none;
-            pointer-events: none;
-        }
-        /* Game Over Modal */
-        .game-over-modal {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(71, 33, 107, 0.85);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
-        .over-title {
-            font-size: 44px;
-            font-weight: bold;
-            color: #fff;
-            margin-bottom: 10px;
-        }
-        .final-score {
-            color: rgba(140, 224, 235, 1);
-            font-size: 26px;
-            font-weight: bold;
-            margin-bottom: 25px;
-        }
-        .replay-btn {
-            background: #00f3ff;
-            color: #111;
-            border: none;
-            padding: 15px 35px;
-            font-size: 22px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
-            transition: transform 0.1s;
-        }
-        .replay-btn:active {
-            transform: scale(0.95);
-        }
-        .final-level {
-            color: rgba(255, 212, 110, 1);
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
-
-<div id="game-container">
-    <canvas id="gameCanvas"></canvas>
-    
-    <!-- HUD Overlay -->
-    <div class="hud">
-        <div style="text-align: center;">
-            <div class="score-caption">SCORE</div>
-            <div class="score" id="scoreText">0</div>
-            <div class="level" id="levelText">LEVEL 1 • NEXT AT 5</div>
-        </div>
-        <div class="hint">TAP ANYWHERE TO SHIFT COLORS →</div>
-    </div>
-
-    <div class="level-splash" id="levelSplash">LEVEL 2!</div>
-
-    <!-- Game Over Screen -->
-    <div class="game-over-modal" id="gameOverModal">
-        <div class="over-title">GAME OVER</div>
-        <div class="final-score" id="finalScoreText">SCORE 0</div>
-        <button class="replay-btn" id="replayBtn">PLAY AGAIN →</button>
-        <div class="final-level" id="finalLevelText">LEVEL 1</div>
-    </div>
-</div>
-
-<script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const container = document.getElementById('game-container');
-
-    canvas.width = container.clientWidth;
-    canvas.height = container.clientHeight;
-
-    const colors = ['#00f3ff', '#ff0055', '#ffcc00', '#00ff66'];
-    
-    let score = 0;
-    let level = 1;
-    let nextLevelScore = 5;
-    let isGameOver = false;
-
-    // Player Basket
-    let currentColorIndex = 0;
-    const basketWidth = 100;
-    const basketHeight = 18;
-    const basketY = canvas.height - 70;
-    let basketX = (canvas.width - basketWidth) / 2;
-
-    // Ball
-    let ball = {
-        x: canvas.width / 2,
-        y: 50,
-        radius: 12,
-        color: colors[0],
-        speed: 3
-    };
-
-    // Web Audio Synthesizer (No external sound files required)
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    const audioCtx = new AudioContext();
-
-    function playSound(freq, duration, type = 'sine') {
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-Haan ji, bilkul! Godot wale design, colors, aur rules ke mutabiq HTML5/JS code tayyar kar diya hai.
-
-Is code mein Godot ki game ke saare elements shamil hain:
-- Same Color Scheme (Cyan score text, Yellow level text, Purple overlay)
-- Same UI Text ("SCORE", "LEVEL 1 • NEXT AT 5", "TAP ANYWHERE TO SHIFT COLORS →")
-- Level Up Splash screen ("LEVEL 2!")
-- Game Over screen jisme "PLAY AGAIN →" button aur final stats hain
-
-Neeche diya gaya poora code copy karein aur GitHub par apni `index.html` file mein paste karke **Commit changes** kar dein:
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Color Shift Game</title>
+  <title>Color Catch Game</title>
   <style>
     * {
       box-sizing: border-box;
@@ -255,9 +34,8 @@ Neeche diya gaya poora code copy karein aur GitHub par apni `index.html` file me
       justify-content: space-between;
       align-items: center;
       overflow: hidden;
-      border: 2px solid #2e344e;
+      border: 2px solid #00ADB5;
     }
-    /* UI Overlay */
     .hud {
       position: absolute;
       top: 0;
@@ -309,13 +87,11 @@ Neeche diya gaya poora code copy karein aur GitHub par apni `index.html` file me
       z-index: 20;
       text-shadow: 0 0 10px rgba(0,0,0,0.8);
     }
-    /* Canvas Game View */
     canvas {
       width: 100%;
       height: 100%;
       display: block;
     }
-    /* Game Over Overlay */
     .game-over-screen {
       position: absolute;
       top: 0;
@@ -368,7 +144,6 @@ Neeche diya gaya poora code copy karein aur GitHub par apni `index.html` file me
   <div id="game-container">
     <canvas id="gameCanvas"></canvas>
 
-    <!-- HUD Overlay -->
     <div class="hud">
       <div style="text-align: center;">
         <div class="score-caption">SCORE</div>
@@ -378,10 +153,8 @@ Neeche diya gaya poora code copy karein aur GitHub par apni `index.html` file me
       <div class="hint">TAP ANYWHERE TO SHIFT COLORS →</div>
     </div>
 
-    <!-- Level Splash -->
     <div class="level-splash" id="levelSplash">LEVEL 2!</div>
 
-    <!-- Game Over Screen -->
     <div class="game-over-screen" id="gameOverScreen">
       <div class="over-title">GAME OVER</div>
       <div class="final-score" id="finalScoreText">SCORE &nbsp;0</div>
@@ -395,7 +168,6 @@ Neeche diya gaya poora code copy karein aur GitHub par apni `index.html` file me
     const ctx = canvas.getContext('2d');
     const container = document.getElementById('game-container');
 
-    // UI Elements
     const scoreText = document.getElementById('scoreText');
     const levelText = document.getElementById('levelText');
     const levelSplash = document.getElementById('levelSplash');
@@ -404,19 +176,18 @@ Neeche diya gaya poora code copy karein aur GitHub par apni `index.html` file me
     const finalLevelText = document.getElementById('finalLevelText');
     const replayBtn = document.getElementById('replayBtn');
 
-    // Game Variables
     let score = 0;
     let level = 1;
     let nextLevelScore = 5;
     let isGameOver = false;
 
-    const colors = ['#00ADB5', '#FF2E63', '#FFD42A']; // Cyan, Pink/Red, Yellow
+    const colors = ['#00ADB5', '#FF2E63', '#FFD42A'];
     let paddleColorIndex = 0;
 
     let paddle = {
       x: 0,
       y: 0,
-      width: 100,
+      width: 110,
       height: 18
     };
 
@@ -434,29 +205,27 @@ Neeche diya gaya poora code copy karein aur GitHub par apni `index.html` file me
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    // Tap to Shift Colors
     window.addEventListener('pointerdown', (e) => {
       if (e.target === replayBtn) return;
       if (isGameOver) return;
-      
       paddleColorIndex = (paddleColorIndex + 1) % colors.length;
     });
 
     function spawnBall() {
       const colorIndex = Math.floor(Math.random() * colors.length);
       balls.push({
-        x: Math.random() * (canvas.width - 30) + 15,
+        x: Math.random() * (canvas.width - 40) + 20,
         y: -20,
         radius: 14,
         colorIndex: colorIndex,
-        speed: (3 + Math.random() * 1.5) * speedMultiplier
+        speed: (2.5 + Math.random() * 1.2) * speedMultiplier
       });
     }
 
     function triggerLevelUp() {
       level++;
       nextLevelScore = level * 5;
-      speedMultiplier += 0.25;
+      speedMultiplier += 0.2;
 
       levelText.innerText = `LEVEL ${level} \u00A0•\u00A0 NEXT AT ${nextLevelScore}`;
       levelSplash.innerText = `LEVEL ${level}!`;
@@ -495,7 +264,7 @@ Neeche diya gaya poora code copy karein aur GitHub par apni `index.html` file me
       if (isGameOver) return;
 
       spawnTimer++;
-      if (spawnTimer > Math.max(30, 80 - level * 5)) {
+      if (spawnTimer > Math.max(35, 90 - level * 6)) {
         spawnBall();
         spawnTimer = 0;
       }
@@ -504,12 +273,11 @@ Neeche diya gaya poora code copy karein aur GitHub par apni `index.html` file me
         let b = balls[i];
         b.y += b.speed;
 
-        // Paddle Collision Check
         if (
           b.y + b.radius >= paddle.y &&
           b.y - b.radius <= paddle.y + paddle.height &&
-          b.x >= paddle.x &&
-          b.x <= paddle.x + paddle.width
+          b.x + b.radius >= paddle.x &&
+          b.x - b.radius <= paddle.x + paddle.width
         ) {
           if (b.colorIndex === paddleColorIndex) {
             score++;
@@ -525,7 +293,6 @@ Neeche diya gaya poora code copy karein aur GitHub par apni `index.html` file me
           continue;
         }
 
-        // Missed Ball
         if (b.y - b.radius > canvas.height) {
           balls.splice(i, 1);
         }
@@ -535,15 +302,17 @@ Neeche diya gaya poora code copy karein aur GitHub par apni `index.html` file me
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw Paddle
       ctx.fillStyle = colors[paddleColorIndex];
       ctx.shadowColor = colors[paddleColorIndex];
       ctx.shadowBlur = 12;
       ctx.beginPath();
-      ctx.roundRect(paddle.x, paddle.y, paddle.width, paddle.height, 9);
+      if (ctx.roundRect) {
+        ctx.roundRect(paddle.x, paddle.y, paddle.width, paddle.height, 9);
+      } else {
+        ctx.rect(paddle.x, paddle.y, paddle.width, paddle.height);
+      }
       ctx.fill();
 
-      // Draw Falling Balls
       for (let b of balls) {
         ctx.fillStyle = colors[b.colorIndex];
         ctx.shadowColor = colors[b.colorIndex];
@@ -553,7 +322,7 @@ Neeche diya gaya poora code copy karein aur GitHub par apni `index.html` file me
         ctx.fill();
       }
 
-      ctx.shadowBlur = 0; // Reset Shadow
+      ctx.shadowBlur = 0;
     }
 
     function gameLoop() {
