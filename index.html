@@ -1,337 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Color Catch Game</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #12131C;
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      overflow: hidden;
-      color: #FFF;
-    }
-    #game-container {
-      position: relative;
-      width: 100%;
-      max-width: 420px;
-      height: 100vh;
-      background-color: #1a1c29;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      overflow: hidden;
-      border: 2px solid #00ADB5;
-    }
-    .hud {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      padding: 30px 20px;
-      z-index: 10;
-    }
-    .score-caption {
-      color: rgb(143, 222, 232);
-      font-size: 18px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      margin-top: 10px;
-    }
-    .score {
-      font-size: 60px;
-      font-weight: bold;
-      line-height: 1;
-      margin-top: 5px;
-    }
-    .level {
-      color: rgb(255, 212, 110);
-      font-size: 20px;
-      font-weight: bold;
-      margin-top: 5px;
-    }
-    .hint {
-      color: rgb(148, 171, 196);
-      font-size: 16px;
-      margin-bottom: 20px;
-      font-weight: bold;
-    }
-    .level-splash {
-      position: absolute;
-      top: 45%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: rgb(255, 237, 158);
-      font-size: 44px;
-      font-weight: bold;
-      display: none;
-      z-index: 20;
-      text-shadow: 0 0 10px rgba(0,0,0,0.8);
-    }
-    canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-    .game-over-screen {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(71, 33, 107, 0.85);
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
-      z-index: 30;
-    }
-    .over-title {
-      font-size: 48px;
-      font-weight: bold;
-      color: #FFF;
-    }
-    .final-score {
-      color: rgb(140, 224, 235);
-      font-size: 28px;
-      font-weight: bold;
-    }
-    .final-level {
-      color: rgb(255, 212, 110);
-      font-size: 21px;
-      font-weight: bold;
-    }
-    .replay-btn {
-      width: 220px;
-      height: 60px;
-      background-color: #00ADB5;
-      color: #FFF;
-      border: none;
-      border-radius: 8px;
-      font-size: 22px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      transition: transform 0.1s;
-    }
-    .replay-btn:active {
-      transform: scale(0.95);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Catch Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #111;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .ad-container {
+            margin: 15px 0;
+            text-align: center;
+            min-height: 250px;
+        }
+        iframe {
+            width: 100%;
+            max-width: 480px;
+            height: 650px;
+            border: 2px solid #00f3ff;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+        }
+    </style>
 </head>
 <body>
 
-  <div id="game-container">
-    <canvas id="gameCanvas"></canvas>
-
-    <div class="hud">
-      <div style="text-align: center;">
-        <div class="score-caption">SCORE</div>
-        <div class="score" id="scoreText">0</div>
-        <div class="level" id="levelText">LEVEL 1 &nbsp;•&nbsp; NEXT AT 5</div>
-      </div>
-      <div class="hint">TAP ANYWHERE TO SHIFT COLORS →</div>
+    <!-- TOP ADSTERRA AD -->
+    <div class="ad-container">
+        <!-- PASTE YOUR ADSTERRA CODE HERE -->
     </div>
 
-    <div class="level-splash" id="levelSplash">LEVEL 2!</div>
+    <!-- YOUR JABALI GAME -->
+    <iframe src="https://jabali.ai/game/35c0d236-25d3-4bbc-a536-85c780ad0c37/create-from-scratch/color-catch" allow="autoplay; fullscreen"></iframe>
 
-    <div class="game-over-screen" id="gameOverScreen">
-      <div class="over-title">GAME OVER</div>
-      <div class="final-score" id="finalScoreText">SCORE &nbsp;0</div>
-      <button class="replay-btn" id="replayBtn">PLAY AGAIN &nbsp;→</button>
-      <div class="final-level" id="finalLevelText">LEVEL 1</div>
+    <!-- BOTTOM ADSTERRA AD -->
+    <div class="ad-container">
+        <!-- PASTE YOUR ADSTERRA CODE HERE -->
     </div>
-  </div>
 
-  <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const container = document.getElementById('game-container');
-
-    const scoreText = document.getElementById('scoreText');
-    const levelText = document.getElementById('levelText');
-    const levelSplash = document.getElementById('levelSplash');
-    const gameOverScreen = document.getElementById('gameOverScreen');
-    const finalScoreText = document.getElementById('finalScoreText');
-    const finalLevelText = document.getElementById('finalLevelText');
-    const replayBtn = document.getElementById('replayBtn');
-
-    let score = 0;
-    let level = 1;
-    let nextLevelScore = 5;
-    let isGameOver = false;
-
-    const colors = ['#00ADB5', '#FF2E63', '#FFD42A'];
-    let paddleColorIndex = 0;
-
-    let paddle = {
-      x: 0,
-      y: 0,
-      width: 110,
-      height: 18
-    };
-
-    let balls = [];
-    let spawnTimer = 0;
-    let speedMultiplier = 1;
-
-    function resizeCanvas() {
-      canvas.width = container.clientWidth;
-      canvas.height = container.clientHeight;
-      paddle.y = canvas.height - 100;
-      paddle.x = (canvas.width - paddle.width) / 2;
-    }
-
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    window.addEventListener('pointerdown', (e) => {
-      if (e.target === replayBtn) return;
-      if (isGameOver) return;
-      paddleColorIndex = (paddleColorIndex + 1) % colors.length;
-    });
-
-    function spawnBall() {
-      const colorIndex = Math.floor(Math.random() * colors.length);
-      balls.push({
-        x: Math.random() * (canvas.width - 40) + 20,
-        y: -20,
-        radius: 14,
-        colorIndex: colorIndex,
-        speed: (2.5 + Math.random() * 1.2) * speedMultiplier
-      });
-    }
-
-    function triggerLevelUp() {
-      level++;
-      nextLevelScore = level * 5;
-      speedMultiplier += 0.2;
-
-      levelText.innerText = `LEVEL ${level} \u00A0•\u00A0 NEXT AT ${nextLevelScore}`;
-      levelSplash.innerText = `LEVEL ${level}!`;
-      levelSplash.style.display = 'block';
-
-      setTimeout(() => {
-        levelSplash.style.display = 'none';
-      }, 1500);
-    }
-
-    function checkGameOver() {
-      isGameOver = true;
-      finalScoreText.innerText = `SCORE \u00A0${score}`;
-      finalLevelText.innerText = `LEVEL ${level}`;
-      gameOverScreen.style.display = 'flex';
-    }
-
-    function resetGame() {
-      score = 0;
-      level = 1;
-      nextLevelScore = 5;
-      speedMultiplier = 1;
-      isGameOver = false;
-      balls = [];
-      paddleColorIndex = 0;
-
-      scoreText.innerText = '0';
-      levelText.innerText = `LEVEL 1 \u00A0•\u00A0 NEXT AT 5`;
-      gameOverScreen.style.display = 'none';
-      levelSplash.style.display = 'none';
-    }
-
-    replayBtn.addEventListener('click', resetGame);
-
-    function update() {
-      if (isGameOver) return;
-
-      spawnTimer++;
-      if (spawnTimer > Math.max(35, 90 - level * 6)) {
-        spawnBall();
-        spawnTimer = 0;
-      }
-
-      for (let i = balls.length - 1; i >= 0; i--) {
-        let b = balls[i];
-        b.y += b.speed;
-
-        if (
-          b.y + b.radius >= paddle.y &&
-          b.y - b.radius <= paddle.y + paddle.height &&
-          b.x + b.radius >= paddle.x &&
-          b.x - b.radius <= paddle.x + paddle.width
-        ) {
-          if (b.colorIndex === paddleColorIndex) {
-            score++;
-            scoreText.innerText = score;
-            balls.splice(i, 1);
-
-            if (score >= nextLevelScore) {
-              triggerLevelUp();
-            }
-          } else {
-            checkGameOver();
-          }
-          continue;
-        }
-
-        if (b.y - b.radius > canvas.height) {
-          balls.splice(i, 1);
-        }
-      }
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = colors[paddleColorIndex];
-      ctx.shadowColor = colors[paddleColorIndex];
-      ctx.shadowBlur = 12;
-      ctx.beginPath();
-      if (ctx.roundRect) {
-        ctx.roundRect(paddle.x, paddle.y, paddle.width, paddle.height, 9);
-      } else {
-        ctx.rect(paddle.x, paddle.y, paddle.width, paddle.height);
-      }
-      ctx.fill();
-
-      for (let b of balls) {
-        ctx.fillStyle = colors[b.colorIndex];
-        ctx.shadowColor = colors[b.colorIndex];
-        ctx.shadowBlur = 10;
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      ctx.shadowBlur = 0;
-    }
-
-    function gameLoop() {
-      update();
-      draw();
-      requestAnimationFrame(gameLoop);
-    }
-
-    gameLoop();
-  </script>
 </body>
 </html>
